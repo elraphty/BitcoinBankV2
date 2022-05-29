@@ -7,7 +7,7 @@ const router: Router = express.Router();
 
 router.post('/invoice', create, authUser, addInvoice);
 
-router.get('/transactions', authUser, listInvoices);
+router.get('/payments', authUser, listInvoices);
 
 router.post('/lookup', lookup, authUser, lookupInvoice);
 

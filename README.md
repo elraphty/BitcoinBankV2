@@ -1,10 +1,12 @@
 # Bitcoin bankV2
+
 ### A Bitcoin bank project built with Bitcoin, Lightning (LND) and Typescript
 
 ## Requirements
 
  - Nodejs version 14.19.0 minimum
- - A Running Bitcoin Core node on Signet or Testnet network
+ - A running Bitcoin Core node on Signet or Testnet network
+ - A running Lightning node (LND)
  - PostgresDB installed
 
 ## How It Works
@@ -22,17 +24,23 @@
 
  - Inbound Transactions are checked every 10 mins (Bitcoin's block time) after the confirmation meets 
    the confirmation count specified in the .env it updates the user's balance and create a new address for them
+ - User's can create a Lightning BOLT 11 invoice, if payemnt is made to the invoice and settled the amount of satoshis paid will be added to their balance
+ - User's can also pay a Lighning BOLT 11 invoice, if the payment is successful the amount will be deducted from their balances
 
 ## How to Run
 
  - Clone the project ```git clone https://github.com/elraphty/BitcoinBank.git```
+### Server
+
  - Run ```npm install```
  - Install knex globally ```npm install knex -g```
  - Start your Bitcoin Core node by running  ```bitcoind``` in your termainal
  - Confirm if your node is running using ```bitcoin-cli -getinfo``` command
+ - Start your LND node by running  ```lnd``` in your termainal
+ - Confirm if your LND node is running using ```lncli getinfo``` command
  - Create a .env file copy the variables in .env_sample file paste them in ur newly created .env file and update the values
  - Migrate Database schemas by running ```knex migrate:latest```
- - Run ```npm run dev``` in the project folder
+ - Run ```npm run start``` in the project folder
 
 ## API ROUTES
 
@@ -43,5 +51,9 @@
  - GET /api/v1/user/balance = Get user bitcoin balance
  - POST /api/v1/wallet/createtransaction = Create an outbound transaction, and update the user's balance
  - GET /api/v1/wallet/transactions = Get user transactions
+ - POST /api/v1/lightning/invoice =  Create inbound Lightning BOLT 11 invoice
+ - GET /api/v1/lightning/payments = List user's Ligthning payments
+ - POST /api/v1/lightning/lookup = Lookup Lightning invoice
+ - POST /api/v1/lightning/pay = Pay outbound Lightning invoice
 
 
