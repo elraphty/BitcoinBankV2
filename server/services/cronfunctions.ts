@@ -64,6 +64,7 @@ export const getReceived = async () => {
                             amount: trans.amount,
                             txid: trans.txid,
                             status: 0,
+                            network: 'bitcoin',
                             type: trans.category,
                             userid: userId
                         });

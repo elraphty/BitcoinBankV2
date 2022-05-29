@@ -9,8 +9,9 @@
         .notNullable()
         .references('id')
         .inTable('users');
-      t.float('amount').notNullable();
+      t.decimal('amount', 8, 8).notNullable();
       t.text('txid').notNullable().unique();
+      t.enum('network', ['bitcoin', 'lightning']).notNullable();
       t.enum('type', ['send', 'receive']).notNullable();
       t.enum('status', [1, 0]).notNullable().defaultTo(0);
     });

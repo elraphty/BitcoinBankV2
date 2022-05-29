@@ -20,6 +20,7 @@ export interface TransactionLogs {
     amount: number;
     txid: string;
     status: number;
+    network: string;
     type: string;
     userid?: number;
 }
