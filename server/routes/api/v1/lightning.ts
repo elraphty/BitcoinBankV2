@@ -1,13 +1,17 @@
 import express, { Router } from 'express';
-import { addInvoice, listInvoices } from '../../../controllers/lightning';
-import { createInvoice } from '../../../helpers/validators/lightning';
+import { addInvoice, listInvoices, lookupInvoice , payUserInvoice} from '../../../controllers/lightning';
+import { create, lookup } from '../../../helpers/validators/lightning';
 import { authUser } from '../../../helpers/auth';
 
 const router: Router = express.Router();
 
-router.post('/invoice', createInvoice, authUser, addInvoice);
+router.post('/invoice', create, authUser, addInvoice);
 
 router.get('/transactions', authUser, listInvoices);
+
+router.post('/lookup', lookup, authUser, lookupInvoice);
+
+router.post('/pay', lookup, authUser, payUserInvoice);
 
 export default router;
 

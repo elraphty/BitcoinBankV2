@@ -1,5 +1,5 @@
-import { AddInvoiceResponse } from '@radar/lnrpc';
-import lndClient from '../config/lnd';
+import { AddInvoiceResponse, Duplex, FeeReportResponse, Invoice, Payment, PaymentHash, PayReq, PayReqString, Readable, SendRequest, SendResponse } from '@radar/lnrpc';
+import lndClient, { routerClient } from '../config/lnd';
 import { TransactionLogs, UserBalance } from '../interfaces/db';
 import knex from '../db';
 import { emitSocketEvent } from '../config/socket';
@@ -16,6 +16,37 @@ export const createInvoice = async (
 
     return invoice;
 };
+
+export const decodeInvoice = async (invoice: string): Promise<PayReq> => {
+    const rpc = await lndClient;
+
+    const decodedInvoice: PayReq = await rpc.decodePayReq({ payReq: invoice });
+    return decodedInvoice;
+}
+
+export const invoiceLookup = async (invoice: string): Promise<Invoice> => {
+    const rpc = await lndClient;
+
+    const decodedInvoice: PayReq = await decodeInvoice(invoice);
+
+    const lookup = await rpc.lookupInvoice({ rHashStr: decodedInvoice.paymentHash });
+
+    return lookup;
+}
+
+export const getFeeReport = async (): Promise<FeeReportResponse> => {
+    const rpc = await lndClient;
+
+    return await rpc.feeReport();
+}
+
+export const payInvoice = async (invoice: string): Promise<Readable<Payment>> => {
+    const rpc = await routerClient;
+
+    const invoicePay = await rpc.sendPaymentV2({ paymentRequest: invoice, timeoutSeconds: 360 });
+
+    return invoicePay;
+}
 
 export const subscribeToInvoice = async (invoice: AddInvoiceResponse, btcValue: number, userid: number) => {
     const rpc = await lndClient;
@@ -40,7 +71,7 @@ export const subscribeToInvoice = async (invoice: AddInvoiceResponse, btcValue: 
             const transactions: TransactionLogs[] = await knex<TransactionLogs>(
                 'transactionlogs'
             ).where({ txid: invoice.paymentRequest });
-            
+
             const transaction = transactions[0];
             const tuserId = transaction.userid;
 
