@@ -105,7 +105,7 @@ export const payUserInvoice = async (req: Request, res: Response, next: NextFunc
 
         const feeReport: FeeReportResponse = await getFeeReport();
 
-        const feeRate = feeReport.channelFees[0].feeRate;
+        const feeRate = Number(feeReport.channelFees[0].feeRate);
 
         const total = balance + feeRate;
 
@@ -114,6 +114,8 @@ export const payUserInvoice = async (req: Request, res: Response, next: NextFunc
         }
 
         const invoicePaid = await payInvoice(invoice);
+
+        const amountToWithdraw = (amount / 100000000) + feeRate;
 
         if (invoicePaid) {
             // insert in transaction logs
@@ -128,7 +130,7 @@ export const payUserInvoice = async (req: Request, res: Response, next: NextFunc
 
             // Update user balance
             await knex<UserBalance>('usersbalance')
-                .update({ amount: knex.raw(`amount - ${amountInBtc}`) })
+                .update({ amount: knex.raw(`amount - ${amountToWithdraw}`) })
                 .where({ userid });
 
             return responseSuccess(res, 200, 'Successfully paid invoice', {});
