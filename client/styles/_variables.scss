@@ -1,0 +1,16 @@
+@import '_fonts';
+
+$primaryBackground: #000000;
+$primaryButton: rgb(168, 85, 247);
+$textLightColor: #FEFEFE;
+$textLightError: #FFB1A3;
+$textDarkColor: #000000;
+$textFont: ITC_AVANT, 'sans-serif';
+$textSizeMd: 1.2rem;
+$textSizeSm: 0.9rem;
+$textSizeXs: 0.8rem;
+$font: ITC_AVANT;
+$fontDemi:  ITC_AVANT_DEMI;
+$fontBold:  ITC_AVANT_BOLD;
+$bodyWrapHeight: calc(94.5vh - 15px);
+$bodyMobileWrapHeight: calc(93vh - 15px);
