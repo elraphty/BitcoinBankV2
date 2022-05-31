@@ -1,12 +1,16 @@
 import type { NextPage } from 'next';
-import { useEffect } from 'react';
+import { FunctionComponent, ReactNode, useEffect } from 'react';
 import { getFromStorage } from '../helpers/localstorage';
 import { useRouter } from 'next/router';
 import Sidebar from './Sidebar';
 import Topbar from './Topbar';
 import MobileNav from './MobileNav';
 
-const BodyWrap: NextPage = (props: any) => {
+type BodyProps = {
+   children: ReactNode
+}
+
+const BodyWrap: NextPage<BodyProps> = (props: BodyProps) => {
   const router = useRouter();
 
   useEffect(() => {

@@ -8,11 +8,7 @@ import Link from 'next/link';
 import axios from 'axios';
 import { BASE_URL } from '../helpers/axios';
 import { setToStorage, getFromStorage } from '../helpers/localstorage';
-
-export type LoginFormValues = {
-  email: string;
-  password: string;
-};
+import { SetSubmitting , AuthFormValues} from '../types';
 
 const validationSchema = Yup.object().shape({
   email: Yup.string().required('This field is required!').email('Input a valid email'),
@@ -37,15 +33,15 @@ const Login: NextPage = () => {
   );
 
   const initialValues = useMemo(
-    (): LoginFormValues => ({
+    (): AuthFormValues => ({
       email: '',
       password: '',
     }),
     [],
   );
 
-  const formSubmit = useCallback((values: LoginFormValues, { setSubmitting }) => {
-    const body: LoginFormValues = {
+  const formSubmit: SetSubmitting = useCallback((values: AuthFormValues, { setSubmitting }) => {
+    const body: AuthFormValues = {
       email: values.email,
       password: values.password
     };
