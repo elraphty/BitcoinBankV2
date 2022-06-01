@@ -7,7 +7,7 @@ import BodyWrap from '../../components/BodyWrap';
 export default function Receive() {
     const [addresses, setAddresses] = useState<[]>([]);
     const [index, setIndex] = useState(0);
-    const [addressType, setAddressType] = useState<string>('p2wpkh');
+    const [platform, setPlatform] = useState<string>('bitcoin');
 
     const getNewAddress = () => {
         if (index < addresses.length - 1) {
@@ -21,17 +21,17 @@ export default function Receive() {
         const token = await getFromStorage('token');
 
         if (token) {
-            const addresses = await getWithToken(`wallet/getaddress?type=${addressType}`, token);
+            const addresses = await getWithToken(`wallet/getaddress`, token);
             setAddresses(addresses.data.data.address);
         }
-    }, [addressType]);
+    }, [platform]);
 
     useEffect(() => {
         getAddresses();
     }, [getAddresses]);
 
-    const switchAddressType = useCallback((_type: string) => {
-        setAddressType(_type);
+    const switchPlatforms = useCallback((_type: string) => {
+        setPlatform(_type);
         getAddresses();
     }, [getAddresses]);
 
@@ -42,13 +42,13 @@ export default function Receive() {
                     <div className="">
                         <div className="max-w-7xl mx-auto">
                             <section className="mt-3 mb-2">
-                                <button className={`inline justify-center py-2 px-4 border border-transparent shadow-sm text-sm font-medium rounded-md  ${addressType === 'p2wpkh' ? 'bg-purple-900 text-white' : 'text-gray-700'} focus:outline-none`}
-                                    onClick={() => switchAddressType('p2wpkh')
+                                <button className={`inline justify-center py-2 px-4 border border-transparent shadow-sm text-sm font-medium rounded-md  ${platform === 'bitcoin' ? 'bg-black text-white' : 'text-gray-700'} focus:outline-none`}
+                                    onClick={() => switchPlatforms('bitcoin')
                                     }>
-                                    P2WPKH
+                                    Bitcoin
                                 </button>
-                                <button className={`inline justify-center lg:ml-5 sm:ml-0 py-2 px-4 border border-transparent shadow-sm text-sm font-medium rounded-md ${addressType === 'p2pkh' ? 'bg-purple-900 text-white' : 'text-gray-700'} focus:outline-none`} onClick={() => switchAddressType('p2pkh')}>
-                                    P2PKH
+                                <button className={`inline justify-center lg:ml-5 sm:ml-0 py-2 px-4 border border-transparent shadow-sm text-sm font-medium rounded-md ${platform === 'lightning' ? 'bg-black text-white' : 'text-gray-700'} focus:outline-none`} onClick={() => switchPlatforms('lightning')}>
+                                    Lightning
                                 </button>
                             </section>
                             <div className="py-4 flex align-center justify-center">
@@ -93,20 +93,13 @@ export default function Receive() {
                                             </div>
                                             <div className="px-4 py-3 bg-gray-50 text-right sm:px-6">
                                                 <button
-                                                    onClick={() => getNewAddress()}
-                                                    className="bg-white py-2 px-4 border border-gray-300 rounded-md shadow-sm text-sm font-medium text-gray-700 hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 "
-                                                >
-                                                    Generate next address
-                                                </button>
-
-                                                <button
                                                     onClick={() =>
                                                         navigator.clipboard.writeText(
                                                             // addresses[index] && addresses[index].address!
                                                             ''
                                                         )
                                                     }
-                                                    className="inline-flex justify-center py-2 px-4 border border-transparent shadow-sm text-sm font-medium rounded-md text-gray-700 :outline-none focus:ring-2 focus:ring-offset-2"
+                                                    className="bg-white inline-flex justify-center py-2 px-4 border border-transparent shadow-sm text-sm font-medium rounded-md text-gray-700 :outline-none focus:ring-2 focus:ring-offset-2"
                                                 >
                                                     Copy address
                                                 </button>

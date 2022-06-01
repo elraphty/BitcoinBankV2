@@ -19,8 +19,8 @@ const validationSchema = Yup.object().shape({
 });
 
 const CreateTxForm = ({ createTransaction, error }: Props) => {
-    const [addressType, setAddressType] = useState<string>('p2wpkh');
-    const [btnText, setBtnText] = useState<string>('Create transaction');
+    const [platform, setPlatform] = useState<string>('bitcoin');
+    const [btnText, setBtnText] = useState<string>('Pay');
 
     const initialValues = useMemo(
         (): FormValues => ({
@@ -30,26 +30,29 @@ const CreateTxForm = ({ createTransaction, error }: Props) => {
         [],
     );
 
-    const switchAddressType = useCallback((_type: string) => {
-        setAddressType(_type);
+    const switchPlatforms = useCallback((_type: string) => {
+        setPlatform(_type);
     }, []);
 
     const formSubmit: SetSubmitting<FormValues> = useCallback(async (values: FormValues, { setSubmitting }) => {
         setBtnText('Creating... transaction');
-        await createTransaction(values.recipientAddress, values.amountToSend, addressType);
+        // await createTransaction(values.recipientAddress, values.amountToSend, addressType);
         setSubmitting(false);
         setBtnText('Create transaction');
-    }, [addressType, createTransaction]);
+    }, [createTransaction]);
 
     return (
         <>
             <section className="mt-3 mb-2">
-                <button className={`inline justify-center py-2 px-4 border border-transparent shadow-sm text-sm font-medium rounded-md  ${addressType === 'p2wpkh' ? 'bg-purple-900 text-white' : 'text-gray-700'} focus:outline-none`}
-                    onClick={() => switchAddressType('p2wpkh')
-                    }>
-                    P2WPKH
-                </button>
-            </section>
+                                <button className={`inline justify-center py-2 px-4 border border-transparent shadow-sm text-sm font-medium rounded-md  ${platform === 'bitcoin' ? 'bg-black text-white' : 'text-gray-700'} focus:outline-none`}
+                                    onClick={() => switchPlatforms('bitcoin')
+                                    }>
+                                    Bitcoin
+                                </button>
+                                <button className={`inline justify-center lg:ml-5 sm:ml-0 py-2 px-4 border border-transparent shadow-sm text-sm font-medium rounded-md ${platform === 'lightning' ? 'bg-black text-white' : 'text-gray-700'} focus:outline-none`} onClick={() => switchPlatforms('lightning')}>
+                                    Lightning
+                                </button>
+                            </section>
             <div className="py-4 flex align-center justify-center">
                 <div className="w-full" style={{ maxWidth: 800 }}>
                     <div className="mt-5 md:mt-0 md:col-span-2 w-full">
@@ -110,7 +113,7 @@ const CreateTxForm = ({ createTransaction, error }: Props) => {
                                     <div className="px-4 py-3 bg-gray-50 text-right sm:px-6">
                                         <button
                                             disabled={isSubmitting}
-                                            className="inline-flex justify-center py-2 px-4 border border-transparent shadow-sm text-sm font-medium rounded-md text-gray-700 bg-tabconf-blue-600 hover:bg-tabconf-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-tabconf-blue-500"
+                                            className="inline-flex justify-center py-2 px-4 border border-transparent shadow-sm text-sm font-medium rounded-md text-gray-700  focus:outline-none focus:ring-2 focus:ring-offset-2"
                                             type="submit"
                                         >
                                             {btnText}

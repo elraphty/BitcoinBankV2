@@ -28,7 +28,7 @@ input {
 }
 
 button {
-  background-color: #90EE90;
+  background-color: $primaryButton;
   font-family: $fontDemi;
   @media (max-width: 800px) {
     font-size: 0.9rem;
@@ -239,10 +239,19 @@ label.form__label {
     font-size: $textSizeMd;
     font-family: $font;
     color: #000000;
+    margin-top: 15px;
+  }
+
+  .transactions-wrap {
+    margin-top: 15px;
+    .header {
+      margin-bottom: 10px;
+      font-size: 1.4rem;
+    }
   }
 
   .balance-wrap {
-    margin-top: 40px;
+    margin-top: 30px;
     section {
       display: inline-block;
       width: 23vw;
