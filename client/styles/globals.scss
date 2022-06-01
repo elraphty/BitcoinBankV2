@@ -28,6 +28,7 @@ input {
 }
 
 button {
+  background-color: #90EE90;
   font-family: $fontDemi;
   @media (max-width: 800px) {
     font-size: 0.9rem;
@@ -89,7 +90,7 @@ label.form__label {
         display: block;
       }
       a:hover {
-        background: $primaryButton;
+        background: #808080;
         width: 100%;
       }
     }
@@ -237,7 +238,28 @@ label.form__label {
   .greeting {
     font-size: $textSizeMd;
     font-family: $font;
-    color: $primaryButton;
+    color: #000000;
+  }
+
+  .balance-wrap {
+    margin-top: 40px;
+    section {
+      display: inline-block;
+      width: 23vw;
+      background: #D3D3D3;
+      margin-right: 2vw;
+      padding: 25px 30px;
+      border-radius: 10px;
+      box-shadow: 5px -10px 0px 1px #808080;
+      h4 {
+        font-size: 1.1rem;
+      }
+      h2 {
+        margin-top: 10px;
+        font-size: 2.2rem;
+        font-weight: 900;
+      }
+    }
   }
 
   ul.description {

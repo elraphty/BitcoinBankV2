@@ -17,6 +17,16 @@ const Home: NextPage = () => {
       <Topbar />
       <BodyWrap>
         <h1 className="greeting">Hello Bitcoineer! Welcome to my Bitcoin bank</h1>
+        <div className='balance-wrap'>
+          <section className='btc'>
+            <h4>Balance in btc</h4>
+            <h2>0.00005</h2>
+          </section>
+          <section className='sats'>
+            <h4>Balance in sats</h4>
+            <h2>700000</h2>
+          </section>
+        </div>
       </BodyWrap>
     </div>
   )

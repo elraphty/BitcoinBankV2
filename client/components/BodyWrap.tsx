@@ -13,12 +13,12 @@ type BodyProps = {
 const BodyWrap: NextPage<BodyProps> = (props: BodyProps) => {
   const router = useRouter();
 
-  useEffect(() => {
-    const token = getFromStorage('token');
-    if (!token) {
-      router.push('/login');
-    }
-  }, [router])
+  // useEffect(() => {
+  //   const token = getFromStorage('token');
+  //   if (!token) {
+  //     router.push('/login');
+  //   }
+  // }, [router])
 
 
   return (

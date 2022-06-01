@@ -36,7 +36,7 @@ const Signup: NextPage = () => {
         [email, password],
     );
 
-    const formSubmit: SetSubmitting = useCallback((values: AuthFormValues, { setSubmitting }) => {
+    const formSubmit: SetSubmitting<AuthFormValues> = useCallback((values: AuthFormValues, { setSubmitting }) => {
         const body: AuthFormValues = {
             email: values.email,
             password: values.password
@@ -114,7 +114,7 @@ const Signup: NextPage = () => {
                             <button
                                 type="submit"
                                 disabled={isSubmitting}
-                                className="font-bold mt-4 bg-purple-500 text-white rounded-lg p-2 w-full">
+                                className="font-bold mt-4 bg-green-400 text-black rounded-lg p-2 w-full">
                                 Create account
                             </button>
                         </section>

@@ -17,6 +17,7 @@
     "node-sass": "^7.0.1",
     "react": "18.1.0",
     "react-dom": "18.1.0",
+    "react-qr-code": "^2.0.7",
     "sweetalert": "^2.1.2",
     "yup": "^0.32.11"
   },

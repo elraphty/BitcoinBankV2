@@ -15,8 +15,6 @@ const Sidebar: NextPage = () => {
     <div className='sidebar'>
       <ul>
         <li className={`${url === '' ? 'activeLink' : ''}`} ><Link href="/">Home</Link></li>
-        <li className={`${url === 'addresses' ? 'activeLink' : ''}`} ><Link href="/addresses">Addresses</Link></li>
-        <li className={`${url === 'utxos' ? 'activeLink' : ''}`}><Link href="/utxos">Utxos</Link></li>
         <li className={`${url === 'transactions' ? 'activeLink' : ''}`}><Link href="/transactions">Transactions</Link></li>
         <li className={`${url === 'send' ? 'activeLink' : ''}`}><Link href="/send">Send</Link></li>
         <li className={`${url === 'receive' ? 'activeLink' : ''}`}><Link href="/receive">Receive</Link></li>
