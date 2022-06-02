@@ -66,8 +66,6 @@ const Transactions: NextPage = () => {
                                 }
                             </tbody>
 
-
-
                         </table>
                     )}
                 </div>

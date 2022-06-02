@@ -29,10 +29,8 @@ export const addInvoice = async (req: Request, res: Response, next: NextFunction
             .then(async (invoice) => {
                 // Subscribe tp invoice
                 subscribeToInvoice(invoice, bitcoinAmount, userId);
-
-                const txid: string = invoice.paymentRequest;
-
-                responseSuccess(res, 200, 'Successfully created invoice', { txid });
+                
+                responseSuccess(res, 200, 'Successfully created invoice', { invoice: invoice.paymentRequest });
             })
             .catch((e) => {
                 return responseError(res, 403, 'Could not create invoice');
