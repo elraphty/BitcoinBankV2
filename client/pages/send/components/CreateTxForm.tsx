@@ -4,12 +4,13 @@ import * as Yup from "yup";
 import { SetSubmitting } from '../../../types';
 
 interface Props {
-    createTransaction(recipientAddress: string, amountToSend: number, type: string): void;
+    createTransaction(recipientAddress: string, invoice: string, amountToSend: number, type: string,): void;
     error: string;
 }
 
 export type FormValues = {
     recipientAddress: string;
+    invoice: string;
     amountToSend: number;
 };
 
@@ -21,10 +22,12 @@ const validationSchema = Yup.object().shape({
 const CreateTxForm = ({ createTransaction, error }: Props) => {
     const [platform, setPlatform] = useState<string>('bitcoin');
     const [btnText, setBtnText] = useState<string>('Pay');
+    const [lightningError, setLightningError] = useState<string>('');
 
     const initialValues = useMemo(
         (): FormValues => ({
             recipientAddress: '',
+            invoice: '',
             amountToSend: 0,
         }),
         [],
@@ -35,76 +38,116 @@ const CreateTxForm = ({ createTransaction, error }: Props) => {
     }, []);
 
     const formSubmit: SetSubmitting<FormValues> = useCallback(async (values: FormValues, { setSubmitting }) => {
-        setBtnText('Creating... transaction');
-        // await createTransaction(values.recipientAddress, values.amountToSend, addressType);
+        setBtnText('Making... payment');
+
+        if (platform === 'lightning') {
+            if (!values.invoice) {
+                return setLightningError('Provide a lightning invoice');
+            }
+        } 
+        await createTransaction(values.recipientAddress, values.invoice, values.amountToSend, platform);
+
         setSubmitting(false);
-        setBtnText('Create transaction');
+        setBtnText('Pay');
     }, [createTransaction]);
+
 
     return (
         <>
             <section className="mt-3 mb-2">
-                                <button className={`inline justify-center py-2 px-4 border border-transparent shadow-sm text-sm font-medium rounded-md  ${platform === 'bitcoin' ? 'bg-black text-white' : 'text-gray-700'} focus:outline-none`}
-                                    onClick={() => switchPlatforms('bitcoin')
-                                    }>
-                                    Bitcoin
-                                </button>
-                                <button className={`inline justify-center lg:ml-5 sm:ml-0 py-2 px-4 border border-transparent shadow-sm text-sm font-medium rounded-md ${platform === 'lightning' ? 'bg-black text-white' : 'text-gray-700'} focus:outline-none`} onClick={() => switchPlatforms('lightning')}>
-                                    Lightning
-                                </button>
-                            </section>
+                <button className={`inline justify-center py-2 px-4 border border-transparent shadow-sm text-sm font-medium rounded-md  ${platform === 'bitcoin' ? 'bg-black text-white' : 'text-gray-700'} focus:outline-none`}
+                    onClick={() => switchPlatforms('bitcoin')
+                    }>
+                    Bitcoin
+                </button>
+                <button className={`inline justify-center lg:ml-5 sm:ml-0 py-2 px-4 border border-transparent shadow-sm text-sm font-medium rounded-md ${platform === 'lightning' ? 'bg-black text-white' : 'text-gray-700'} focus:outline-none`} onClick={() => switchPlatforms('lightning')}>
+                    Lightning
+                </button>
+            </section>
             <div className="py-4 flex align-center justify-center">
                 <div className="w-full" style={{ maxWidth: 800 }}>
                     <div className="mt-5 md:mt-0 md:col-span-2 w-full">
                         <Formik initialValues={initialValues} onSubmit={formSubmit} validationSchema={validationSchema}>{({ values, handleChange, isSubmitting, errors }) => (
                             <Form>
                                 <div className="shadow sm:rounded-md sm:overflow-hidden">
-                                    <div className="px-4 py-5 bg-white space-y-6 sm:p-6">
-                                        <div className="grid grid-cols-3 gap-6">
-                                            <div className="col-span-3 sm:col-span-2">
-                                                <label
-                                                    htmlFor="recipientAddress"
-                                                    className="block text-sm font-medium text-gray-700"
-                                                >
-                                                    Send bitcoin to...
-                                                </label>
-                                                <div className="mt-1 rounded-md shadow-sm">
-                                                    <input
-                                                        type="text"
-                                                        name="recipientAddress"
-                                                        className="flex-1 block w-full rounded-md sm:text-s px-3 border-solid border-2 border-[#C8C8C9]"
-                                                        placeholder="tc1qlhh35k7e6g9zqk6rnxp246a992pduq0jfg0fnl"
-                                                        value={values.recipientAddress}
-                                                        onChange={handleChange}
-                                                    />
+                                    {platform === 'bitcoin' ? (
+                                        <div className="px-4 py-5 bg-white space-y-6 sm:p-6">
+                                            <div className="grid grid-cols-3 gap-6">
+                                                <div className="col-span-3 sm:col-span-2">
+                                                    <label
+                                                        htmlFor="recipientAddress"
+                                                        className="block text-sm font-medium text-gray-700"
+                                                    >
+                                                        Send bitcoin to...
+                                                    </label>
+                                                    <div className="mt-1 rounded-md shadow-sm">
+                                                        <input
+                                                            type="text"
+                                                            name="recipientAddress"
+                                                            className="flex-1 block w-full rounded-md sm:text-s px-3 border-solid border-2 border-[#C8C8C9]"
+                                                            placeholder="tc1qlhh35k7e6g9zqk6rnxp246a992pduq0jfg0fnl"
+                                                            value={values.recipientAddress}
+                                                            onChange={handleChange}
+                                                        />
+                                                    </div>
+                                                    {errors.recipientAddress ? <p className="formErrors">{errors.recipientAddress}</p> : null}
                                                 </div>
-                                                {errors.recipientAddress ? <p className="formErrors">{errors.recipientAddress}</p> : null}
+                                            </div>
+
+                                            <div className="grid grid-cols-3 gap-6">
+                                                <div className="col-span-3 sm:col-span-2">
+                                                    <label
+                                                        htmlFor="price"
+                                                        className="block text-sm font-medium text-gray-700"
+                                                    >
+                                                        Amount to send in btc ...
+                                                    </label>
+                                                    <div className="mt-1 rounded-md shadow-sm">
+                                                        <input
+                                                            type="text"
+                                                            name="amountToSend"
+                                                            className="block w-full pr-12 sm:text-sm rounded-md px-3 border-solid border-2 border-[#C8C8C9]"
+                                                            placeholder="42069"
+                                                            aria-describedby="price-currency"
+                                                            value={values.amountToSend}
+                                                            onChange={handleChange}
+                                                        />
+                                                    </div>
+                                                    {errors.amountToSend ? <p className="formErrors">{errors.amountToSend}</p> : null}
+                                                </div>
                                             </div>
                                         </div>
 
-                                        <div className="grid grid-cols-3 gap-6">
-                                            <div className="col-span-3 sm:col-span-2">
-                                                <label
-                                                    htmlFor="price"
-                                                    className="block text-sm font-medium text-gray-700"
-                                                >
-                                                    Amount to send in sats ...
-                                                </label>
-                                                <div className="mt-1 rounded-md shadow-sm">
-                                                    <input
-                                                        type="text"
-                                                        name="amountToSend"
-                                                        className="block w-full pr-12 sm:text-sm rounded-md px-3 border-solid border-2 border-[#C8C8C9]"
-                                                        placeholder="42069"
-                                                        aria-describedby="price-currency"
-                                                        value={values.amountToSend}
-                                                        onChange={handleChange}
-                                                    />
+                                    ) : (
+                                        <div className="px-4 py-5 bg-white space-y-6 sm:p-6">
+                                            {lightningError && (
+                                                <div className="px-4 py-5 bg-white space-y-6 sm:px-6 sm:pb-2 sm:pt-0 text-red-500 text-xs">
+                                                    Error: {lightningError}
                                                 </div>
-                                                {errors.amountToSend ? <p className="formErrors">{errors.amountToSend}</p> : null}
+                                            )}
+                                            <div className="grid grid-cols-3 gap-6">
+                                                <div className="col-span-3 sm:col-span-2">
+                                                    <label
+                                                        htmlFor="invoice"
+                                                        className="block text-sm font-medium text-gray-700"
+                                                    >
+                                                        Pay lightning invoice...
+                                                    </label>
+                                                    <div className="mt-1 rounded-md shadow-sm">
+                                                        <textarea
+                                                            rows={5}
+                                                            name="invoixce"
+                                                            className="flex-1 block w-full rounded-md sm:text-s px-3 py-2 border-solid border-2 border-[#C8C8C9]"
+                                                            placeholder="lightning invoice"
+                                                            value={values.invoice}
+                                                            onChange={handleChange}
+                                                        />
+                                                    </div>
+                                                </div>
                                             </div>
                                         </div>
-                                    </div>
+                                    )}
+
                                     {error && (
                                         <div className="px-4 py-5 bg-white space-y-6 sm:px-6 sm:pb-2 sm:pt-0 text-red-500 text-xs">
                                             Error: {error}

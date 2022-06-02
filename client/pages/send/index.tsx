@@ -2,15 +2,14 @@ import { useEffect, useState } from 'react';
 import BodyWrap from '../../components/BodyWrap';
 
 import CreateTxForm from './components/CreateTxForm';
-import TransactionSummary from './components/TransactionSummary';
 
 import { postWithToken, getWithToken } from '../../helpers/axios';
 import { getFromStorage } from '../../helpers/localstorage';
+import TransactionSummary from './components/TransactionSummary';
 
 export default function Send() {
     const [step, setStep] = useState(0);
     const [error, setError] = useState<string>('');
-    const [tHex, setTHex] = useState<string>('');
     const [txId, setTxID] = useState<string>('');
     const [status, setStatus] = useState<string>('');
 
@@ -19,47 +18,39 @@ export default function Send() {
 
     const createTransactionWithFormValues = async (
         recipientAddress: string,
+        invoice: string,
         amountToSend: number,
         type: string,
     ) => {
         const token = await getFromStorage('token');
         try {
             if (token) {
-                const body = {
-                    recipientAddress,
-                    amount: Number(amountToSend)
+                if (type === 'lightning') {
+                    const body = {
+                        invoice
+                    };
+
+                    const res = await postWithToken(`lightning/pay`, body, token);
+                    if (res.status == 200) {
+                        setTxID(res.data.data.invoice);
+                        setStep(1);
+                    }
+                } else {
+                    const body = {
+                        recipient: recipientAddress,
+                        amount: Number(amountToSend)
+                    }
+                    const res = await postWithToken(`wallet/createtransaction`, body, token);
+                    if (res.status == 200) {
+                        setTxID(res.data.data.txid);
+                        setStep(1);
+                    }
                 }
-
-                const res = await postWithToken(`wallet/createtransaction?type=${type}`, body, token);
-                setTHex(res.data.data.tHex.txHex);
-                setStep(1);
-
             }
         } catch (e) {
             setError((e as Error).message);
         }
     };
-
-    const broadcastTx = async (): Promise<string> => {
-        const token = await getFromStorage('token');
-        let txHex: string = '';
-        if (token) {
-            const body = {
-                txHex: tHex,
-            }
-            postWithToken('wallet/broadcasttransaction', body, token)
-                .then(res => {
-                    setStatus('success');
-                    setTxID(res.data.data);
-                })
-                .catch(e => {
-                    setStatus('error');
-                });
-
-        }
-        return txHex;
-    };
-
     return (
         <BodyWrap>
             <div>
@@ -74,11 +65,9 @@ export default function Send() {
                             )}
                             {step === 1 && (
                                 <TransactionSummary
-                                    broadcastTx={broadcastTx}
-                                    tHex={tHex}
-                                    status={status}
-                                    txId={txId}
                                     setStep={setStep}
+                                    txId={txId}
+                                    status={status}
                                 />
                             )}
                         </div>

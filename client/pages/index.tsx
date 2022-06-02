@@ -10,6 +10,7 @@ import { getFromStorage } from '../helpers/localstorage';
 const Home: NextPage = () => {
   const [balance, setBalance] = useState<number>(0.000000);
   const [satsBalance, setSatsBalance] = useState<number>(0);
+  const [transactionCount, setTransactionCount] = useState<number>(0);
 
   useEffect(() => {
     const getBalance = async () => {
@@ -23,7 +24,15 @@ const Home: NextPage = () => {
       setSatsBalance(balanceInSats);
     };
 
+    const getCount = async () => {
+      const token = await getFromStorage('token');
+      const countReq = await getWithToken('user/transactions/count', token);
+
+      setTransactionCount(countReq.data.data.count);
+    };
+
     getBalance();
+    getCount();
   }, []);
 
   return (
@@ -46,6 +55,10 @@ const Home: NextPage = () => {
           <section className='sats'>
             <h4>Balance in sats</h4>
             <h2>{satsBalance}</h2>
+          </section>
+          <section className='sats'>
+            <h4>Total transactions</h4>
+            <h2>{transactionCount}</h2>
           </section>
         </div>
       </BodyWrap>

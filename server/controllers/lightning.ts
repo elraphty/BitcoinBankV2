@@ -29,7 +29,7 @@ export const addInvoice = async (req: Request, res: Response, next: NextFunction
             .then(async (invoice) => {
                 // Subscribe tp invoice
                 subscribeToInvoice(invoice, bitcoinAmount, userId);
-                
+
                 responseSuccess(res, 200, 'Successfully created invoice', { invoice: invoice.paymentRequest });
             })
             .catch((e) => {
@@ -131,7 +131,7 @@ export const payUserInvoice = async (req: Request, res: Response, next: NextFunc
                 .update({ amount: knex.raw(`amount - ${amountToWithdraw}`) })
                 .where({ userid });
 
-            return responseSuccess(res, 200, 'Successfully paid invoice', {});
+            return responseSuccess(res, 200, 'Successfully paid invoice', { invoice });
         } else {
             return responseError(res, 502, 'Could not pay invoice');
         }
