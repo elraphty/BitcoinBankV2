@@ -93,7 +93,7 @@ export const listTransactions = async (req: Request, res: Response, next: NextFu
     const userId = reqUser.user.id;
 
     // list user transactions
-    const transactions = await knex<TransactionLogs>('transactionlogs').where({ userid: userId });
+    const transactions = await knex<TransactionLogs>('transactionlogs').orderBy('id', 'desc').where({ userid: userId }).limit(20);
 
     responseSuccess(res, 200, 'Successfully listed transaction', { transactions });
 }
