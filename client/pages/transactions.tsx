@@ -60,7 +60,7 @@ const Transactions: NextPage = () => {
                                             <td>{trans.amount}</td>
                                             <td>{btcToSats(trans.amount)}</td>
                                             <td>{trans.type}</td>
-                                            <td>{trans.status}</td>
+                                            <td>{trans.status ? 'settled': 'pending'}</td>
                                         </tr>
                                     ))
                                 }
