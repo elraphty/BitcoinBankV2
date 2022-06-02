@@ -1,7 +1,7 @@
 
 export type AuthFormValues = {
-    email: string;
+    username: string;
     password: string;
 };
 
-export type SetSubmitting = (values: AuthFormValues, actions: { setSubmitting: (isSubmitting: boolean) => void }) => void;
+export type SetSubmitting<T> = (values: T, actions: { setSubmitting: (isSubmitting: boolean) => void }) => void;

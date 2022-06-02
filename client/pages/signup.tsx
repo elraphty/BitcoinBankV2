@@ -11,16 +11,15 @@ import { useRouter } from 'next/router';
 import { SetSubmitting , AuthFormValues} from '../types';
 
 const validationSchema = Yup.object().shape({
-    email: Yup.string().required('This field is required!').email('Input a valid email'),
+    username: Yup.string().required('This field is required!').min(3, 'Username must be up to four(4) letters'),
     password: Yup.string().required('This field is required!').min(6, 'Password must be up to six(6) characters')
 });
 
 const Signup: NextPage = () => {
     const router = useRouter();
     const [signupError, setSignupError] = useState('');
-    const [email, setEmail] = useState<string>('');
+    const [username, setUsername] = useState<string>('');
     const [password, setPassword] = useState<string>('');
-    const mnemonicRef = useRef<HTMLTextAreaElement>(null);
 
     const inputClassName = useMemo(
         () =>
@@ -30,24 +29,23 @@ const Signup: NextPage = () => {
 
     const initialValues = useMemo(
         (): AuthFormValues => ({
-            email: email || '',
+            username: username || '',
             password: password || '',
         }),
-        [email, password],
+        [username, password],
     );
 
     const formSubmit: SetSubmitting<AuthFormValues> = useCallback((values: AuthFormValues, { setSubmitting }) => {
         const body: AuthFormValues = {
-            email: values.email,
+            username: values.username,
             password: values.password
         };
 
-        setEmail(values.email);
+        setUsername(values.username);
         setPassword(values.password);
 
-        axios.post(`${BASE_URL}user`, body)
+        axios.post(`${BASE_URL}user/register`, body)
             .then(async res => {
-                await setToStorage('token', res.data.data.token);
                 router.push('/login');
             })
             .catch(err => {
@@ -74,22 +72,22 @@ const Signup: NextPage = () => {
                         {signupError ? <p className="formErrors">{signupError}</p> : null}
                         <div className="wrap">
                             <section className="inputgroup">
-                                <label htmlFor="Email" className="form__label">
-                                    Email
+                                <label htmlFor="Username" className="form__label">
+                                    Username
                                 </label>
                                 <div className="flex items-center w-full">
                                     <input
-                                        id="email"
+                                        id="username"
                                         className={inputClassName}
                                         type="text"
-                                        value={values.email}
-                                        placeholder="Your email"
+                                        value={values.username}
+                                        placeholder="Your username"
                                         autoComplete="off"
                                         onChange={handleChange}
                                     />
                                 </div>
                             </section>
-                            {errors.email ? <p className="formErrors">{errors.email}</p> : null}
+                            {errors.username ? <p className="formErrors">{errors.username}</p> : null}
                         </div>
                         <div className="wrap">
                             <section className="inputgroup">

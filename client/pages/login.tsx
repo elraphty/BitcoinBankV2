@@ -11,7 +11,7 @@ import { setToStorage, getFromStorage } from '../helpers/localstorage';
 import { SetSubmitting , AuthFormValues} from '../types';
 
 const validationSchema = Yup.object().shape({
-  email: Yup.string().required('This field is required!').email('Input a valid email'),
+  username: Yup.string().required('This field is required!').min(3, 'Username must be up to four(4) letters'),
   password: Yup.string().required('This field is required!').min(6, 'Password must be up to six(6) characters')
 });
 
@@ -34,7 +34,7 @@ const Login: NextPage = () => {
 
   const initialValues = useMemo(
     (): AuthFormValues => ({
-      email: '',
+      username: '',
       password: '',
     }),
     [],
@@ -42,7 +42,7 @@ const Login: NextPage = () => {
 
   const formSubmit: SetSubmitting<AuthFormValues> = useCallback((values: AuthFormValues, { setSubmitting }) => {
     const body: AuthFormValues = {
-      email: values.email,
+      username: values.username,
       password: values.password
     };
 
@@ -75,21 +75,21 @@ const Login: NextPage = () => {
             {loginError? <p className="formErrors">{loginError}</p> : null}
             <div className="wrap">
               <section className="inputgroup">
-                <label htmlFor="Email" className="form__label">
-                  Email
+                <label htmlFor="Username" className="form__label">
+                  Username
                 </label>
                 <div className="flex items-center w-full">
                   <input
-                    id="email"
+                    id="username"
                     className={inputClassName}
                     type="text"
-                    value={values.email}
-                    placeholder="Your email"
+                    value={values.username}
+                    placeholder="Your username"
                     onChange={handleChange}
                   />
                 </div>
               </section>
-              {errors.email ? <p className="formErrors">{errors.email}</p> : null}
+              {errors.username ? <p className="formErrors">{errors.username}</p> : null}
             </div>
             <div className="wrap">
               <section className="inputgroup">
