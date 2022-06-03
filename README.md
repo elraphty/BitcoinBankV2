@@ -32,6 +32,7 @@
  - Clone the project ```git clone https://github.com/elraphty/BitcoinBank.git```
 ### Server
 
+ - cd server
  - Run ```npm install```
  - Install knex globally ```npm install knex -g```
  - Start your Bitcoin Core node by running  ```bitcoind``` in your termainal
@@ -41,6 +42,16 @@
  - Create a .env file copy the variables in .env_sample file paste them in ur newly created .env file and update the values
  - Migrate Database schemas by running ```knex migrate:latest```
  - Run ```npm run start``` in the project folder
+
+### Client
+
+ ```
+ 
+  cd client
+  yarn install
+  yarn dev
+
+ ```
 
 ## API ROUTES
 

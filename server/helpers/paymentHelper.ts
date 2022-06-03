@@ -1,4 +1,4 @@
-import { AddInvoiceResponse, Duplex, FeeReportResponse, Invoice, Payment, PaymentHash, PayReq, PayReqString, Readable, SendRequest, SendResponse } from '@radar/lnrpc';
+import { AddInvoiceResponse, FeeReportResponse, Invoice, Payment, PayReq,  Readable } from '@radar/lnrpc';
 import lndClient, { routerClient } from '../config/lnd';
 import { TransactionLogs, UserBalance } from '../interfaces/db';
 import knex from '../db';
