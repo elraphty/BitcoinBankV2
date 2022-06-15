@@ -22,7 +22,7 @@ const TransactionSummary = ({ status, txId, setStep }: Props) => {
 
             <div className="mt-4 bg-white border border-gray-200 rounded-lg shadow-sm p-5">
                 {status === 'success' ? <TransactionSuccessAlert txid={txId} /> : null}
-                <h3 className="mt-3 mb-3 text-lg text-gray-500">Transaction Hex: {txId}</h3>
+                <h3 className="mt-3 mb-3 text-lg text-gray-500">Transaction : {txId}</h3>
                 <div className="border-t border-gray-200 py-6 px-4 sm:px-6">
                     <button
                         type="submit"

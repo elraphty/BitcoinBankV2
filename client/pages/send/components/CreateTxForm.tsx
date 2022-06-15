@@ -15,8 +15,8 @@ export type FormValues = {
 };
 
 const validationSchema = Yup.object().shape({
-    recipientAddress: Yup.string().required('This field is required!'),
-    amountToSend: Yup.string().required('This field is required!')
+    recipientAddress: Yup.string().when('invoice', {is: '', then: Yup.string().required('This field is required!')}),
+    amountToSend: Yup.string().when('invoice', {is: '', then: Yup.string().required('This field is required!')})
 });
 
 const CreateTxForm = ({ createTransaction, error }: Props) => {
@@ -136,7 +136,7 @@ const CreateTxForm = ({ createTransaction, error }: Props) => {
                                                     <div className="mt-1 rounded-md shadow-sm">
                                                         <textarea
                                                             rows={5}
-                                                            name="invoixce"
+                                                            name="invoice"
                                                             className="flex-1 block w-full rounded-md sm:text-s px-3 py-2 border-solid border-2 border-[#C8C8C9]"
                                                             placeholder="lightning invoice"
                                                             value={values.invoice}
